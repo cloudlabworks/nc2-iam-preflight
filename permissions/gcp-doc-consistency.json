@@ -1,0 +1,12 @@
+{
+  "gcp-sa-nc2-console": {
+    "in_appendix_not_in_gcloud_command": [],
+    "in_gcloud_command_not_in_appendix": [],
+    "gcloud_command_count": 98
+  },
+  "gcp-sa-cluster-nodes": {
+    "in_appendix_not_in_gcloud_command": [],
+    "in_gcloud_command_not_in_appendix": [],
+    "gcloud_command_count": 23
+  }
+}
