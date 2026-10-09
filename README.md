@@ -14,7 +14,7 @@ tells you before the onboarding wizard fails, not after.
 Open the cloud's own shell, signed in as **the person who will do the onboarding**, then:
 
 ```bash
-git clone <this repo> && cd nc2-iam-preflight
+git clone https://github.com/cloudlabworks/nc2-iam-preflight && cd nc2-iam-preflight
 
 python3 nc2_iam_preflight.py aws
 python3 nc2_iam_preflight.py azure --subscription <SUBSCRIPTION_ID> [--app-id <NC2_APP_ID>]
@@ -79,3 +79,11 @@ python3 -m unittest discover -s tests -v
 ```
 
 Offline: every cloud call is faked. They prove the matching and classification logic, not live behaviour.
+
+## Disclaimer
+
+Independent, personal project. Not a Nutanix product, not endorsed or supported by Nutanix. Permission lists come
+from Nutanix's public documentation and may lag it; the documentation is the authority. Issues and corrections
+welcome, especially output from a real run.
+
+MIT licence, see `LICENSE`.
