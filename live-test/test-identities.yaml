@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  nc2-iam-preflight live test: seven throwaway IAM roles, one per verdict the tool can give, plus an operator role
+  that may assume them. Roles only, no compute, nothing billable. Delete the stack to remove every one of them.
+Parameters:
+  OperatorPrincipalArn:
+    Type: String
+    Description: ARN allowed to assume the test roles (the IAM user or role you run the test as)
+Resources:
+  Boundary:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: nc2test-boundary-no-passrole
+      Description: Permissions boundary that allows everything except iam:PassRole (the BLOCKED case)
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - { Effect: Allow, Action: "*", Resource: "*" }
+          - { Effect: Deny, Action: "iam:PassRole", Resource: "*" }
+  # 1 everything: expect all HAVE
+  Admin:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-admin
+      AssumeRolePolicyDocument: &trust
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/AdministratorAccess]
+  # 2 what the NC2 guide names: expect all HAVE
+  GuidePolicies:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-guide-policies
+      AssumeRolePolicyDocument: *trust
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/IAMFullAccess, arn:aws:iam::aws:policy/AWSCloudFormationFullAccess]
+  # 3 IAM only: expect the 9 cloudformation actions MISSING
+  IamOnly:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-iam-only
+      AssumeRolePolicyDocument: *trust
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/IAMFullAccess]
+  # 4 everything but IAM: the simulator call itself is denied, expect UNKNOWN, never a pass
+  PowerUser:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-poweruser
+      AssumeRolePolicyDocument: *trust
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/PowerUserAccess]
+  # 5 admin with an explicit Deny on iam:PassRole: expect iam:PassRole BLOCKED (explicit deny)
+  DenyPassRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-deny-passrole
+      AssumeRolePolicyDocument: *trust
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/AdministratorAccess]
+      Policies:
+        - PolicyName: deny-passrole
+          PolicyDocument: { Version: "2012-10-17", Statement: [{ Effect: Deny, Action: "iam:PassRole", Resource: "*" }] }
+  # 6 admin under a permissions boundary without iam:PassRole: expect iam:PassRole BLOCKED (boundary)
+  Bounded:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-bounded
+      AssumeRolePolicyDocument: *trust
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/AdministratorAccess]
+      PermissionsBoundary: !Ref Boundary
+  # 7 read-only: can't call the simulator, expect UNKNOWN
+  ReadOnly:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: nc2test-readonly
+      AssumeRolePolicyDocument: *trust
+      ManagedPolicyArns: [arn:aws:iam::aws:policy/ReadOnlyAccess]
+Outputs:
+  Roles:
+    Value: nc2test-admin nc2test-guide-policies nc2test-iam-only nc2test-poweruser nc2test-deny-passrole nc2test-bounded nc2test-readonly
