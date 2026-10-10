@@ -22,7 +22,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-admin
-      AssumeRolePolicyDocument: &trust
+      AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/AdministratorAccess]
@@ -31,28 +31,36 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-guide-policies
-      AssumeRolePolicyDocument: *trust
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/IAMFullAccess, arn:aws:iam::aws:policy/AWSCloudFormationFullAccess]
   # 3 IAM only: expect the 9 cloudformation actions MISSING
   IamOnly:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-iam-only
-      AssumeRolePolicyDocument: *trust
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/IAMFullAccess]
   # 4 everything but IAM: the simulator call itself is denied, expect UNKNOWN, never a pass
   PowerUser:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-poweruser
-      AssumeRolePolicyDocument: *trust
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/PowerUserAccess]
   # 5 admin with an explicit Deny on iam:PassRole: expect iam:PassRole BLOCKED (explicit deny)
   DenyPassRole:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-deny-passrole
-      AssumeRolePolicyDocument: *trust
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/AdministratorAccess]
       Policies:
         - PolicyName: deny-passrole
@@ -62,7 +70,9 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-bounded
-      AssumeRolePolicyDocument: *trust
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/AdministratorAccess]
       PermissionsBoundary: !Ref Boundary
   # 7 read-only: can't call the simulator, expect UNKNOWN
@@ -70,7 +80,9 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       RoleName: nc2test-readonly
-      AssumeRolePolicyDocument: *trust
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement: [{ Effect: Allow, Principal: { AWS: !Ref OperatorPrincipalArn }, Action: "sts:AssumeRole" }]
       ManagedPolicyArns: [arn:aws:iam::aws:policy/ReadOnlyAccess]
 Outputs:
   Roles:
