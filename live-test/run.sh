@@ -10,7 +10,7 @@ for R in nc2test-admin nc2test-guide-policies nc2test-iam-only nc2test-poweruser
   ( export AWS_ACCESS_KEY_ID=$(echo "$C" | python3 -c 'import sys,json;print(json.load(sys.stdin)["AccessKeyId"])') \
            AWS_SECRET_ACCESS_KEY=$(echo "$C" | python3 -c 'import sys,json;print(json.load(sys.stdin)["SecretAccessKey"])') \
            AWS_SESSION_TOKEN=$(echo "$C" | python3 -c 'import sys,json;print(json.load(sys.stdin)["SessionToken"])')
-    python3 nc2_iam_preflight.py --json aws > "live-test/results/$R.json" 2>&1; echo "$R exit=$?" )
+    python3 -m nc2_iam_preflight --json aws > "live-test/results/$R.json" 2>&1; echo "$R exit=$?" )
 done
 # account id out of anything we might publish
 sed -i "s/$ACCT/<account-id>/g" live-test/results/*.json

@@ -14,12 +14,15 @@ tells you before the onboarding wizard fails, not after.
 Open the cloud's own shell, signed in as **the person who will do the onboarding**, then:
 
 ```bash
-git clone https://github.com/cloudlabworks/nc2-iam-preflight && cd nc2-iam-preflight
+pip install nc2-iam-preflight
 
-python3 nc2_iam_preflight.py aws
-python3 nc2_iam_preflight.py azure --subscription <SUBSCRIPTION_ID> [--app-id <NC2_APP_ID>]
-python3 nc2_iam_preflight.py gcp --project <PROJECT_ID> [--console-sa <EMAIL>] [--nodes-sa <EMAIL>]
+nc2-iam-preflight aws
+nc2-iam-preflight azure --subscription <SUBSCRIPTION_ID> [--app-id <NC2_APP_ID>]
+nc2-iam-preflight gcp --project <PROJECT_ID> [--console-sa <EMAIL>] [--nodes-sa <EMAIL>]
 ```
+
+Without installing, from a clone: `git clone https://github.com/cloudlabworks/nc2-iam-preflight && cd nc2-iam-preflight`,
+then `python3 -m nc2_iam_preflight aws` (same arguments).
 
 Add `--json` for machine-readable output. Exit code `0` = nothing missing, `1` = something MISSING,
 `2` = something BLOCKED or not evaluable.
@@ -47,16 +50,16 @@ Only public sources. Nothing here comes from customer-authenticated material.
 
 | File | Origin | Source |
 |---|---|---|
-| `permissions/gcp-console-sa.json`, `gcp-nodes-sa.json` | Nutanix | NC2 on Google Cloud Deployment and User Guide, *Appendix: Google Cloud Service Accounts Role Permissions* |
-| `permissions/azure-nc2-app.json` | Nutanix | NC2 on Azure guide, *Creating an Azure Custom Role* |
-| `permissions/aws-onboarding-user-doc.json` | Nutanix | NC2 on AWS guide, *Requirements for NC2 on AWS* (names IAMFullAccess + AWSCloudFormationFullAccess and CreateRole) |
-| Setup-step lists in `nc2_iam_preflight.py` (`AWS_SETUP_ACTIONS`, `AZ_SETUP_ACTIONS`, `GCP_SETUP`) | **Derived** | Each documented setup step mapped to the cloud vendor's permission for that operation. Labelled as derived in the code. |
+| `nc2_iam_preflight/permissions/gcp-console-sa.json`, `gcp-nodes-sa.json` | Nutanix | NC2 on Google Cloud Deployment and User Guide, *Appendix: Google Cloud Service Accounts Role Permissions* |
+| `nc2_iam_preflight/permissions/azure-nc2-app.json` | Nutanix | NC2 on Azure guide, *Creating an Azure Custom Role* |
+| `nc2_iam_preflight/permissions/aws-onboarding-user-doc.json` | Nutanix | NC2 on AWS guide, *Requirements for NC2 on AWS* (names IAMFullAccess + AWSCloudFormationFullAccess and CreateRole) |
+| Setup-step lists in `nc2_iam_preflight/__init__.py` (`AWS_SETUP_ACTIONS`, `AZ_SETUP_ACTIONS`, `GCP_SETUP`) | **Derived** | Each documented setup step mapped to the cloud vendor's permission for that operation. Labelled as derived in the code. |
 
 Each JSON file records its source URL, the doc's *Last Updated* date and when it was fetched. To refresh:
 
 ```bash
 node tools/fetch-sources.mjs          # snapshots the public pages into sources/ (git-ignored)
-python3 tools/extract-permissions.py  # rebuilds permissions/*.json; fails if a list parses shorter than the doc states
+python3 tools/extract-permissions.py  # rebuilds nc2_iam_preflight/permissions/*.json; fails if a list parses shorter than the doc states
 ```
 
 **Doc note (2026-10-08):** the Google Cloud appendix says the NC2 console service account needs "97

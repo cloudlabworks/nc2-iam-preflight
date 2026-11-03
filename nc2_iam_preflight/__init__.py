@@ -9,9 +9,11 @@ Two checks per cloud:
   A. Can I onboard?   The signed-in user, against the setup steps in the NC2 user guide.
   B. Does what I built match the guide?   The role / app / service accounts NC2 will use, against Nutanix's list.
 
-    python3 nc2_iam_preflight.py aws
-    python3 nc2_iam_preflight.py azure --subscription SUB_ID [--app-id APP_ID]
-    python3 nc2_iam_preflight.py gcp --project PROJECT_ID [--console-sa EMAIL] [--nodes-sa EMAIL]
+    nc2-iam-preflight aws
+    nc2-iam-preflight azure --subscription SUB_ID [--app-id APP_ID]
+    nc2-iam-preflight gcp --project PROJECT_ID [--console-sa EMAIL] [--nodes-sa EMAIL]
+
+(From a git clone without installing: python3 -m nc2_iam_preflight aws ...)
 
 Exit code: 0 nothing missing, 1 something MISSING, 2 something BLOCKED or not evaluable.
 Python 3.9+, standard library only. Needs the cloud's CLI (aws / az / gcloud), which every cloud shell has.
@@ -353,7 +355,7 @@ def check_gcp(args, token_fn=None, test_fn=None):
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap = argparse.ArgumentParser(prog="nc2-iam-preflight", description=__doc__.split("\n\n")[0])
     ap.add_argument("--json", action="store_true", help="machine-readable output")
     sp = ap.add_subparsers(dest="cloud", required=True)
     sp.add_parser("aws")
@@ -370,7 +372,3 @@ def main(argv=None):
         return 2
     rep.print(args.json)
     return rep.exit_code()
-
-
-if __name__ == "__main__":
-    sys.exit(main())

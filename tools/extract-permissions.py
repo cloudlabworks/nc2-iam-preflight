@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract the NC2 permission lists from the public doc snapshots in sources/ into permissions/*.json.
+"""Extract the NC2 permission lists from the public doc snapshots in sources/ into nc2_iam_preflight/permissions/*.json.
 
 Every list carries its source URL, fetch time, actor (who needs it) and origin (nutanix | cloud-vendor | derived).
 Counts the docs state are asserted, so a doc change fails loudly instead of silently shrinking a list.
@@ -9,7 +9,7 @@ import json, re, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SRC, OUT = ROOT / "sources", ROOT / "permissions"
+SRC, OUT = ROOT / "sources", ROOT / "nc2_iam_preflight" / "permissions"
 
 
 def page(name):
