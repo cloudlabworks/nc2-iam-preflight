@@ -1,5 +1,9 @@
 # nc2-iam-preflight
 
+[![PyPI](https://img.shields.io/pypi/v/nc2-iam-preflight)](https://pypi.org/project/nc2-iam-preflight/)
+[![Python](https://img.shields.io/pypi/pyversions/nc2-iam-preflight)](https://pypi.org/project/nc2-iam-preflight/)
+[![ci](https://github.com/cloudlabworks/nc2-iam-preflight/actions/workflows/ci.yml/badge.svg)](https://github.com/cloudlabworks/nc2-iam-preflight/actions/workflows/ci.yml)
+
 Before you onboard Nutanix Cloud Clusters (NC2), ask the cloud itself which permissions you're missing.
 
 A checklist says "you need Contributor". This tells you *"you are missing
