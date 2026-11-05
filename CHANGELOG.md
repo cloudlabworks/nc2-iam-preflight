@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - README: PyPI version, Python versions and CI badges.
+- Minimum Python is now 3.10. Python 3.9 reached end of life in October 2025 and is no longer available on GitHub's current Ubuntu runners, so CI tests 3.10 and 3.13.
 
 ## [0.1.0] - 2026-11-03
 

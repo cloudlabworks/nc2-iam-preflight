@@ -32,7 +32,7 @@ Add `--json` for machine-readable output. Exit code `0` = nothing missing, `1` =
 `2` = something BLOCKED or not evaluable.
 
 It is **read-only**: it calls each cloud's permission evaluator and reads IAM. It never creates, grants or
-deletes anything. Python 3.9+, standard library only, plus the CLI every cloud shell already has.
+deletes anything. Python 3.10+, standard library only, plus the CLI every cloud shell already has.
 
 Why not a utility VM: an IAM check has to run *as you*. A VM runs as its own identity and would report what the
 VM may do, not what you lack.
